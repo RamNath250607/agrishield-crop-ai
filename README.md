@@ -1,4 +1,4 @@
-﻿# agrishield-crop-ai
+﻿# Agrishield-crop-ai
 Agrishield Crop AI helps farmers identify diseases in plants by simply using images of leaves. It not only detects what disease is present but also evaluates how serious the infection is. Based on this, it suggests the most suitable treatment and how much to use. The system is designed to support better crop care and reduce losses. Overall, it aims to make plant health monitoring easier and more accessible in real-world farming.
 
 # Project Overview
