@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriShield AI - Intelligent Crop Disease Prediction & Diagnosis</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-icon">
+                    <i data-lucide="shield-alert" class="brand-logo-icon"></i>
+                </div>
+                <div class="brand-text">
+                    <h1>AgriShield</h1>
+                    <span>CROP AI DIAGNOSIS</span>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <button class="nav-item active" data-tab="dashboard">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Dashboard</span>
+                </button>
+                <button class="nav-item" data-tab="scanner">
+                    <i data-lucide="scan-face"></i>
+                    <span>AI Scanner</span>
+                    <span class="badge pulse-badge">Live</span>
+                </button>
+                <button class="nav-item" data-tab="map">
+                    <i data-lucide="map-pin"></i>
+                    <span>Field Risk Map</span>
+                </button>
+                <button class="nav-item" data-tab="calendar">
+                    <i data-lucide="calendar"></i>
+                    <span>Treatment Planner</span>
+                    <span class="badge count-badge" id="pending-tasks-count">0</span>
+                </button>
+                <button class="nav-item" data-tab="library">
+                    <i data-lucide="book-open"></i>
+                    <span>Agronomy Library</span>
+                </button>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="avatar">RN</div>
+                    <div class="profile-info">
+                        <span class="user-name">Ram Nath R P</span>
+                        <span class="user-role">Lead Agronomist</span>
+                    </div>
+                </div>
+                <button class="theme-toggle-btn" id="theme-toggle" title="Toggle Dark/Light Mode">
+                    <i data-lucide="sun" class="sun-icon"></i>
+                    <i data-lucide="moon" class="moon-icon"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Top Header -->
+            <header class="main-header">
+                <div class="header-search">
+                    <div class="region-selector-wrapper">
+                        <i data-lucide="globe" class="search-icon"></i>
+                        <select id="region-selector" class="region-select">
+                            <option value="north">North Farm Sector (A1-C4)</option>
+                            <option value="south">South Orchard Sector (S1-S6)</option>
+                            <option value="east">East Wheat Fields (E1-E8)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <div class="system-status">
+                        <span class="status-dot online"></span>
+                        <span class="status-text">AI Diagnostics Core: Active</span>
+                    </div>
+                    <div class="header-divider"></div>
+                    <div class="time-display" id="current-time">June 23, 2026 - 13:34 PM</div>
+                </div>
+            </header>
+
+            <!-- Dashboard Tab -->
+            <section id="dashboard-tab" class="tab-panel active">
+                <div class="welcome-banner">
+                    <div class="welcome-text">
+                        <h2>Welcome back, Deepak</h2>
+                        <p>Agricultural risk metrics are updated. Weather conditions are triggering moderate fungal warnings for tomato fields.</p>
+                    </div>
+                    <div class="banner-action">
+                        <button class="btn btn-primary" onclick="switchTab('scanner')">
+                            <i data-lucide="scan"></i> Run AI Diagnosis
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Telemetry Cards -->
+                <div class="telemetry-grid">
+                    <div class="telemetry-card alert-high" id="soil-card">
+                        <div class="card-header">
+                            <div class="card-icon-wrapper">
+                                <i data-lucide="droplets"></i>
+                            </div>
+                            <span class="status-label high">High Humidity</span>
+                        </div>
+                        <div class="card-body">
+                            <span class="telemetry-value" id="val-humidity">84%</span>
+                            <span class="telemetry-title">Rel. Humidity</span>
+                        </div>
+                        <div class="card-footer">
+                            <i data-lucide="alert-triangle"></i> Favorable for fungal sporulation.
+                        </div>
+                    </div>
+                    
+                    <div class="telemetry-card" id="temp-card">
+                        <div class="card-header">
+                            <div class="card-icon-wrapper">
+                                <i data-lucide="thermometer"></i>
+                            </div>
+                            <span class="status-label optimal">Optimal</span>
+                        </div>
+                        <div class="card-body">
+                            <span class="telemetry-value" id="val-temp">24.5°C</span>
+                            <span class="telemetry-title">Temperature</span>
+                        </div>
+                        <div class="card-footer">
+                            <i data-lucide="check-circle"></i> Within safe diurnal averages.
+                        </div>
+                    </div>
+
+                    <div class="telemetry-card" id="soil-moist-card">
+                        <div class="card-header">
+                            <div class="card-icon-wrapper">
+                                <i data-lucide="sprout"></i>
+                            </div>
+                            <span class="status-label warning">Dry Soil</span>
+                        </div>
+                        <div class="card-body">
+                            <span class="telemetry-value" id="val-moisture">38%</span>
+                            <span class="telemetry-title">Soil Moisture</span>
+                        </div>
+                        <div class="card-footer">
+                            <i data-lucide="info"></i> Irrigation recommended for Sector A2.
+                        </div>
+                    </div>
+
+                    <div class="telemetry-card" id="uv-card">
+                        <div class="card-header">
+                            <div class="card-icon-wrapper">
+                                <i data-lucide="sun"></i>
+                            </div>
+                            <span class="status-label optimal">Moderate</span>
+                        </div>
+                        <div class="card-body">
+                            <span class="telemetry-value" id="val-uv">5.2 UV</span>
+                            <span class="telemetry-title">Solar Radiation</span>
+                        </div>
+                        <div class="card-footer">
+                            <i data-lucide="trending-down"></i> Light overcast filtering sunlight.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dashboard Content Rows -->
+                <div class="dashboard-rows">
+                    <!-- Historical Analytics -->
+                    <div class="analytics-container card">
+                        <div class="card-title-bar">
+                            <h3>Regional Crop Health Index (Past 30 Days)</h3>
+                            <div class="chart-legend">
+                                <span class="legend-item"><span class="legend-color tomato"></span> Tomato</span>
+                                <span class="legend-item"><span class="legend-color potato"></span> Potato</span>
+                                <span class="legend-item"><span class="legend-color grape"></span> Grape</span>
+                            </div>
+                        </div>
+                        <div class="chart-content">
+                            <!-- Beautiful Interactive SVG Chart -->
+                            <svg class="crop-chart" viewBox="0 0 600 200" preserveAspectRatio="none">
+                                <defs>
+                                    <linearGradient id="tomato-gradient" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stop-color="rgba(239, 68, 68, 0.2)" />
+                                        <stop offset="100%" stop-color="rgba(239, 68, 68, 0)" />
+                                    </linearGradient>
+                                    <linearGradient id="potato-gradient" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stop-color="rgba(245, 158, 11, 0.2)" />
+                                        <stop offset="100%" stop-color="rgba(245, 158, 11, 0)" />
+                                    </linearGradient>
+                                    <linearGradient id="grape-gradient" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stop-color="rgba(139, 92, 246, 0.2)" />
+                                        <stop offset="100%" stop-color="rgba(139, 92, 246, 0)" />
+                                    </linearGradient>
+                                </defs>
+                                
+                                <!-- Grid Lines -->
+                                <line x1="0" y1="50" x2="600" y2="50" stroke="var(--border-color)" stroke-dasharray="4,4" />
+                                <line x1="0" y1="100" x2="600" y2="100" stroke="var(--border-color)" stroke-dasharray="4,4" />
+                                <line x1="0" y1="150" x2="600" y2="150" stroke="var(--border-color)" stroke-dasharray="4,4" />
+                                
+                                <!-- Areas under the curve -->
+                                <path d="M 0 120 L 100 110 L 200 130 L 300 160 L 400 150 L 500 145 L 600 155 L 600 200 L 0 200 Z" fill="url(#tomato-gradient)" />
+                                <path d="M 0 60 L 100 70 L 200 65 L 300 80 L 400 90 L 500 85 L 600 75 L 600 200 L 0 200 Z" fill="url(#potato-gradient)" />
+                                <path d="M 0 80 L 100 50 L 200 45 L 300 35 L 400 40 L 500 55 L 600 45 L 600 200 L 0 200 Z" fill="url(#grape-gradient)" />
+
+                                <!-- Tomato Line -->
+                                <path d="M 0 120 L 100 110 L 200 130 L 300 160 L 400 150 L 500 145 L 600 155" fill="none" stroke="#ef4444" stroke-width="3" />
+                                <!-- Potato Line -->
+                                <path d="M 0 60 L 100 70 L 200 65 L 300 80 L 400 90 L 500 85 L 600 75" fill="none" stroke="#f59e0b" stroke-width="3" />
+                                <!-- Grape Line -->
+                                <path d="M 0 80 L 100 50 L 200 45 L 300 35 L 400 40 L 500 55 L 600 45" fill="none" stroke="#8b5cf6" stroke-width="3" />
+
+                                <!-- Data Dots -->
+                                <circle cx="300" cy="160" r="5" fill="#ef4444" stroke="var(--card-bg)" stroke-width="2" />
+                                <circle cx="300" cy="80" r="5" fill="#f59e0b" stroke="var(--card-bg)" stroke-width="2" />
+                                <circle cx="300" cy="35" r="5" fill="#8b5cf6" stroke="var(--card-bg)" stroke-width="2" />
+                            </svg>
+                            <div class="chart-timeline">
+                                <span>Week 1</span>
+                                <span>Week 2</span>
+                                <span>Week 3</span>
+                                <span>Week 4 (Current)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Disease Outbreaks Alerts -->
+                    <div class="alerts-container card">
+                        <div class="card-title-bar">
+                            <h3>Regional Alerts & Disease Models</h3>
+                            <button class="btn btn-text" onclick="switchTab('map')">View Map <i data-lucide="arrow-right"></i></button>
+                        </div>
+                        <div class="alert-list">
+                            <div class="alert-item warning">
+                                <div class="alert-marker"></div>
+                                <div class="alert-info">
+                                    <h4>High Late Blight Fungal Forecast</h4>
+                                    <p>Extended humidity above 80% matches pathogen cycle parameters for <strong>Phytophthora infestans</strong>. Risk elevated to 78% for Sector A2.</p>
+                                    <span class="alert-time">2 hours ago &bull; Weather Station 3</span>
+                                </div>
+                            </div>
+                            
+                            <div class="alert-item hazard">
+                                <div class="alert-marker"></div>
+                                <div class="alert-info">
+                                    <h4>Active Apple Scab Outbreak Detected</h4>
+                                    <p>AI scanner diagnosis verified a moderate Apple Scab outbreak in Sector B1. Immediate fungicide application recommended.</p>
+                                    <span class="alert-time">1 day ago &bull; Mobile Upload</span>
+                                </div>
+                            </div>
+
+                            <div class="alert-item info">
+                                <div class="alert-marker"></div>
+                                <div class="alert-info">
+                                    <h4>Corn Rust Spore Warning</h4>
+                                    <p>Wind vectors from Southern valleys are carrying Puccinia sorghi spores. Host susceptibility is low, but monitoring is advised.</p>
+                                    <span class="alert-time">2 days ago &bull; Satellite Predictive Model</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- AI Scanner Tab -->
+            <section id="scanner-tab" class="tab-panel">
+                <div class="panel-layout">
+                    <!-- Left: Upload & Scanning area -->
+                    <div class="panel-card card scanner-view-card">
+                        <div class="panel-header">
+                            <h3>Automated Image Diagnosis</h3>
+                            <p>Upload high-resolution images of crop leaves, stalks, or fruits. AgriShield AI will scan and highlight localized symptoms.</p>
+                        </div>
+                        
+                        <!-- Upload Container -->
+                        <div class="scanner-dropzone" id="dropzone">
+                            <input type="file" id="image-upload" accept="image/*" style="display: none;">
+                            
+                            <!-- State 1: Upload instructions -->
+                            <div class="upload-placeholder" id="upload-placeholder-state">
+                                <div class="upload-icon-pulse">
+                                    <i data-lucide="cloud-upload" class="upload-icon"></i>
+                                </div>
+                                <h4>Drag & Drop Crop Leaf Photo</h4>
+                                <p>or click to browse local files (Supports JPEG, PNG up to 10MB)</p>
+                                <button class="btn btn-outline" id="browse-btn">Select Image</button>
+                            </div>
+                            
+                            <!-- State 2: Preview & Scanning -->
+                            <div class="scanner-preview-wrapper hidden" id="scanner-preview-state">
+                                <canvas id="scanner-canvas"></canvas>
+                                <!-- Scanner lines overlay -->
+                                <div class="scanner-line hidden" id="scanner-line"></div>
+                                <div class="scanner-overlay-loader hidden" id="scanner-loader">
+                                    <div class="spinner"></div>
+                                    <span>AI Neural Net Analyzing...</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Presets Quick Loader -->
+                        <div class="presets-section">
+                            <h4>No photo? Test with sample crops:</h4>
+                            <div class="presets-grid">
+                                <button class="preset-btn" data-preset="tomato_blight">
+                                    <span class="preset-badge badge-danger">Blight</span>
+                                    <span>Tomato Leaf</span>
+                                </button>
+                                <button class="preset-btn" data-preset="apple_scab">
+                                    <span class="preset-badge badge-warning">Scab</span>
+                                    <span>Apple Leaf</span>
+                                </button>
+                                <button class="preset-btn" data-preset="corn_rust">
+                                    <span class="preset-badge badge-warning">Rust</span>
+                                    <span>Corn Leaf</span>
+                                </button>
+                                <button class="preset-btn" data-preset="grape_rot">
+                                    <span class="preset-badge badge-danger">Rot</span>
+                                    <span>Grape Leaf</span>
+                                </button>
+                                <button class="preset-btn" data-preset="tomato_healthy">
+                                    <span class="preset-badge badge-success">Healthy</span>
+                                    <span>Healthy Leaf</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Diagnosis results -->
+                    <div class="panel-card card results-view-card">
+                        <div id="results-placeholder" class="results-placeholder">
+                            <i data-lucide="scan" class="huge-icon animate-pulse"></i>
+                            <h3>Awaiting AI Scanning</h3>
+                            <p>Upload a custom crop image or select a sample preset to view real-time diagnostic output, pathogens and curative actions.</p>
+                        </div>
+                        
+                        <div id="results-content" class="results-content hidden">
+                            <div class="results-header">
+                                <div class="crop-category-badge" id="res-crop-type">TOMATO</div>
+                                <h2 id="res-disease-name">Late Blight Fungal Infection</h2>
+                                <div class="confidence-wrapper">
+                                    <div class="confidence-bar-outer">
+                                        <div class="confidence-bar-inner" id="res-confidence-bar" style="width: 94%;"></div>
+                                    </div>
+                                    <span class="confidence-text">AI Confidence: <strong id="res-confidence-val">94.2%</strong></span>
+                                </div>
+                            </div>
+
+                            <div class="diagnosis-grid-info">
+                                <div class="info-pill red" id="res-severity-pill">
+                                    <span class="label">Severity</span>
+                                    <span class="val" id="res-severity-val">Severe</span>
+                                </div>
+                                <div class="info-pill">
+                                    <span class="label">Pathogen Agent</span>
+                                    <span class="val" id="res-pathogen-val">Fungus (P. infestans)</span>
+                                </div>
+                                <div class="info-pill">
+                                    <span class="label">Risk Velocity</span>
+                                    <span class="val" id="res-velocity-val">High (Spreads by spores)</span>
+                                </div>
+                            </div>
+
+                            <div class="diagnosis-text-block">
+                                <h3>Pathological Summary</h3>
+                                <p id="res-description">Late blight is a devastating disease caused by the oomycete Phytophthora infestans. It presents as irregular dark lesions with pale green borders on the leaf tips, progressing rapidly to full foliage decay under damp conditions.</p>
+                            </div>
+
+                            <!-- Interactive Action Checklist -->
+                            <div class="treatment-recommendations">
+                                <h3>Recommended Remediation & Planner</h3>
+                                <p class="recommendation-sub">Select actions to add to your Treatment Planner Calendar:</p>
+                                
+                                <div class="recommendations-list" id="recommendations-list">
+                                    <!-- Dynamic recommendation checkboxes will be loaded here -->
+                                </div>
+
+                                <div class="results-action-bar">
+                                    <button class="btn btn-primary w-full" id="add-to-calendar-btn">
+                                        <i data-lucide="calendar-plus"></i> Add Selected to Treatment Plan
+                                    </button>
+                                    <button class="btn btn-outline w-full" id="clear-scan-btn">
+                                        <i data-lucide="refresh-cw"></i> Scan Another Crop
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Field Risk Map Tab -->
+            <section id="map-tab" class="tab-panel">
+                <div class="map-layout">
+                    <!-- Map Viewcard -->
+                    <div class="card map-view-card">
+                        <div class="panel-header">
+                            <h3>Interactive Disease Outbreak Map</h3>
+                            <p>Hover over fields to inspect real-time sensor metrics, soil telemetry, and algorithmic disease predictions.</p>
+                        </div>
+                        
+                        <!-- Map SVG container -->
+                        <div class="svg-map-container">
+                            <svg viewBox="0 0 800 450" class="farm-svg">
+                                <!-- Background grid texture -->
+                                <defs>
+                                    <pattern id="grid-pattern" width="30" height="30" patternUnits="userSpaceOnUse">
+                                        <path d="M 30 0 L 0 0 0 30" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+                                    </pattern>
+                                </defs>
+                                <rect width="100%" height="100%" fill="url(#grid-pattern)" />
+                                
+                                <!-- Farm boundaries -->
+                                <rect x="20" y="20" width="760" height="410" fill="none" stroke="var(--border-color)" stroke-dasharray="10, 5" stroke-width="1.5" />
+                                
+                                <!-- Irrigation River/Canal path -->
+                                <path d="M 400 20 Q 450 180 350 280 T 420 430" fill="none" stroke="#2563eb" stroke-width="15" opacity="0.35" stroke-linecap="round" />
+                                <text x="430" y="80" fill="#60a5fa" font-size="10" font-weight="bold" opacity="0.7">Irrigation Feed Canal</text>
+
+                                <!-- Sector A (Greenhouses / Protected Crops) -->
+                                <g class="map-field field-healthy" data-field-id="A1" data-crop="Tomato" data-risk="Low" data-temp="23.4°C" data-moist="45%" data-humidity="62%">
+                                    <polygon points="50,40 180,40 180,140 50,140" />
+                                    <text x="115" y="95" class="field-label">A1 (Tomato)</text>
+                                </g>
+                                
+                                <g class="map-field field-hazard" data-field-id="A2" data-crop="Potato" data-risk="Critical (Late Blight)" data-temp="24.8°C" data-moist="72%" data-humidity="86%">
+                                    <polygon points="200,40 370,40 370,140 200,140" />
+                                    <text x="285" y="95" class="field-label">A2 (Potato)</text>
+                                </g>
+
+                                <!-- Sector B (Orchards & Vines) -->
+                                <g class="map-field field-warning" data-field-id="B1" data-crop="Apple" data-risk="Moderate (Apple Scab)" data-temp="22.1°C" data-moist="40%" data-humidity="74%">
+                                    <polygon points="50,160 220,160 220,300 50,300" />
+                                    <text x="135" y="235" class="field-label">B1 (Apple Orchard)</text>
+                                </g>
+
+                                <g class="map-field field-warning" data-field-id="B2" data-crop="Grape" data-risk="Moderate (Black Rot)" data-temp="25.2°C" data-moist="35%" data-humidity="81%">
+                                    <polygon points="240,160 370,160 330,300 240,300" />
+                                    <text x="290" y="235" class="field-label">B2 (Vineyard)</text>
+                                </g>
+
+                                <!-- Sector C (Open Field Crops) -->
+                                <g class="map-field field-healthy" data-field-id="C1" data-crop="Corn" data-risk="Low" data-temp="26.0°C" data-moist="55%" data-humidity="50%">
+                                    <polygon points="460,40 750,40 750,180 460,180" />
+                                    <text x="605" y="115" class="field-label">C1 (Sweet Corn)</text>
+                                </g>
+
+                                <g class="map-field field-healthy" data-field-id="C2" data-crop="Wheat" data-risk="Low" data-temp="24.1°C" data-moist="42%" data-humidity="55%">
+                                    <polygon points="460,200 600,200 580,410 460,410" />
+                                    <text x="525" y="310" class="field-label">C2 (Wheat)</text>
+                                </g>
+
+                                <g class="map-field field-warning" data-field-id="C3" data-crop="Tomato" data-risk="Moderate (Leaf Spot)" data-temp="23.9°C" data-moist="61%" data-humidity="78%">
+                                    <polygon points="620,200 750,200 750,410 600,410" />
+                                    <text x="675" y="310" class="field-label">C3 (Tomato Open)</text>
+                                </g>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Map Inspector Panel -->
+                    <div class="card map-inspector-panel">
+                        <div class="inspector-header">
+                            <span class="inspector-badge" id="inspect-field-id">Select a field</span>
+                            <h3 id="inspect-crop-name">Field Telemetry</h3>
+                        </div>
+                        
+                        <div class="inspector-body" id="inspector-default-msg">
+                            <i data-lucide="map" class="map-hint-icon"></i>
+                            <p>Hover or click on any farm sector in the interactive map to inspect soil sensors, current microclimatic humidity, and calculated disease predictive models.</p>
+                        </div>
+
+                        <div class="inspector-body hidden" id="inspector-data-view">
+                            <div class="inspector-stat-group">
+                                <span class="group-title">Disease Outbreak Risk</span>
+                                <div class="risk-badge" id="inspect-risk-badge">Low Risk</div>
+                            </div>
+
+                            <div class="inspector-stats-grid">
+                                <div class="stat-box">
+                                    <span class="stat-label"><i data-lucide="thermometer"></i> Temperature</span>
+                                    <strong class="stat-value" id="inspect-temp">24°C</strong>
+                                </div>
+                                <div class="stat-box">
+                                    <span class="stat-label"><i data-lucide="droplet"></i> Soil Moisture</span>
+                                    <strong class="stat-value" id="inspect-moisture">45%</strong>
+                                </div>
+                                <div class="stat-box">
+                                    <span class="stat-label"><i data-lucide="cloud-rain"></i> Rel. Humidity</span>
+                                    <strong class="stat-value" id="inspect-humidity">60%</strong>
+                                </div>
+                                <div class="stat-box">
+                                    <span class="stat-label"><i data-lucide="bug"></i> Pathogen Vulnerability</span>
+                                    <strong class="stat-value" id="inspect-pathogen">Mildew (12%)</strong>
+                                </div>
+                            </div>
+
+                            <div class="inspector-actions">
+                                <button class="btn btn-primary w-full" id="inspect-diagnose-btn">
+                                    <i data-lucide="scan"></i> Diagnose Crop Sample
+                                </button>
+                                <button class="btn btn-outline w-full" id="inspect-water-btn">
+                                    <i data-lucide="droplet"></i> Trigger Targeted Drip Irrigation
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Calendar / Treatment Planner Tab -->
+            <section id="calendar-tab" class="tab-panel">
+                <div class="calendar-layout">
+                    <!-- Calendar Viewcard -->
+                    <div class="card calendar-view-card">
+                        <div class="calendar-header-bar">
+                            <div class="calendar-nav">
+                                <button class="btn btn-icon-round" id="prev-month-btn"><i data-lucide="chevron-left"></i></button>
+                                <h3 id="calendar-month-year">June 2026</h3>
+                                <button class="btn btn-icon-round" id="next-month-btn"><i data-lucide="chevron-right"></i></button>
+                            </div>
+                            <div class="calendar-view-toggles">
+                                <span class="badge badge-primary">Month View</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Month Grid -->
+                        <div class="calendar-grid">
+                            <div class="weekday-header">Sun</div>
+                            <div class="weekday-header">Mon</div>
+                            <div class="weekday-header">Tue</div>
+                            <div class="weekday-header">Wed</div>
+                            <div class="weekday-header">Thu</div>
+                            <div class="weekday-header">Fri</div>
+                            <div class="weekday-header">Sat</div>
+                            
+                            <div class="calendar-days" id="calendar-days-container">
+                                <!-- Calendar days loaded dynamically via app.js -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Treatment Task Manager Panel -->
+                    <div class="card task-manager-panel">
+                        <div class="task-header">
+                            <h3>Recovery Tasks List</h3>
+                            <span class="tasks-counter" id="tasks-counter-label">0 pending</span>
+                        </div>
+
+                        <!-- Add task form -->
+                        <form id="add-task-form" class="add-task-form">
+                            <input type="text" id="task-title-input" placeholder="New task (e.g. Copper fungicide spray)" required>
+                            <div class="form-row">
+                                <select id="task-crop-input" required>
+                                    <option value="Tomato">Tomato</option>
+                                    <option value="Potato">Potato</option>
+                                    <option value="Apple">Apple</option>
+                                    <option value="Grape">Grape</option>
+                                    <option value="Corn">Corn</option>
+                                    <option value="Wheat">Wheat</option>
+                                </select>
+                                <input type="date" id="task-date-input" value="2026-06-23" required>
+                            </div>
+                            <button type="submit" class="btn btn-secondary w-full">
+                                <i data-lucide="plus"></i> Add Scheduled Action
+                            </button>
+                        </form>
+
+                        <div class="task-divider"></div>
+
+                        <!-- Task lists scrollable -->
+                        <div class="task-list-scroller" id="task-items-container">
+                            <!-- Loaded dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Agronomy Library Tab -->
+            <section id="library-tab" class="tab-panel">
+                <div class="library-header-section">
+                    <h2>Agronomy Disease Directory</h2>
+                    <p>Search diagnostic indicators, pathogen classes, and prevention guidelines for key crops.</p>
+                    <div class="library-search-wrapper">
+                        <i data-lucide="search" class="search-icon"></i>
+                        <input type="text" id="library-search-input" placeholder="Search by crop, pathogen, or symptoms (e.g. Blight, Potato, fungus)...">
+                    </div>
+                </div>
+
+                <div class="library-grid" id="library-grid">
+                    <!-- Library Items Loaded Dynamically via app.js -->
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
